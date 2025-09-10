@@ -159,7 +159,7 @@ INSERT INTO Detalles (articuloID, facturaID, cantidad) VALUES
 (1, 14, 1), -- Teclado para factura 1014
 (2, 15, 1); -- Mouse para factura 1015
 */
-/*aa
+/*
 INSERT INTO Clientes (nombre, apellido, cuit, direccion, observaciones, localidadID) VALUES
 ("Santiago", "González", "23-24582359-9", "Uriburu 558 - 7ºA", "VIP", 3),
 ("Gloria", "Fernández", "23-35965852-5", "Constitución 323", "GBA", 1),
@@ -181,4 +181,12 @@ insert into Articulos(nombre, precio, stock) values
 ("Apple AirPods Pro", 979.75, 152),
 ("Lavasecarropas Automatico Samsung", 1589.50, 12),
 ("Gloria Trevi / Gloria / CD+DVD", 2385.70, 2);
+*/
+/*
+insert into Facturas(letra, numero, clienteID, fecha, monto) values
+("A", 28, 2, "2021-03-18", 1589.50),
+("A", 39, 4, "2021-04-12", 979.75),
+("B", 8, 3, "2021-04-25", 512.35),
+("B", 12, 5, "2021-05-01", 2385.70),
+("B", 19, 5, "2022-05-26", 979.75);
 */
