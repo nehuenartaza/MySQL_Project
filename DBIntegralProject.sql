@@ -15,6 +15,9 @@ precio double,
 stock int
 );
 
+alter table Articulos add column categoriaID int not null default 1;
+alter table Articulos add constraint fk_categoriaID foreign key (categoriaID) references Categorias(categoriaID);
+
 create table Facturas (
 facturaID int primary key auto_increment unique,
 letra char(1) not null,
@@ -39,6 +42,12 @@ localidadID int primary key auto_increment unique,
 nombre varchar(40) not null,
 codigoPostal varchar(10) not null unique,
 provincia varchar(20) not null
+);
+
+create table Categorias (
+categoriaID int primary key auto_increment,
+nombre varchar(50) not null,
+descripcion varchar(255) not null
 );
 
 #Muestra todas las facturas de un cliente en particular
@@ -93,6 +102,7 @@ alter table Clientes modify nombre varchar(30) not null;
 alter table Clientes modify apellido varchar(35) not null;
 alter table Clientes change comentarios observaciones varchar(255);
 alter table Clientes add column localidadID int, add constraint fk_localidadID foreign key (localidadID) references Localidades(localidadID);
+
 
 
 /*
@@ -189,4 +199,17 @@ insert into Facturas(letra, numero, clienteID, fecha, monto) values
 ("B", 8, 3, "2021-04-25", 512.35),
 ("B", 12, 5, "2021-05-01", 2385.70),
 ("B", 19, 5, "2022-05-26", 979.75);
+*/
+/*
+INSERT INTO Categorias (nombre, descripcion) VALUES
+('Hardware', 'Componentes físicos como procesadores, memorias, discos duros y periféricos.'),
+('Software', 'Programas y aplicaciones desarrollados para diferentes plataformas.'),
+('Servicios en la Nube', 'Soluciones de almacenamiento, procesamiento y servicios basados en la nube.'),
+('Ciberseguridad', 'Productos y servicios para proteger sistemas y datos contra amenazas digitales.'),
+('Inteligencia Artificial', 'Desarrollo y aplicación de modelos de IA y aprendizaje automático.'),
+('Desarrollo Web', 'Diseño y programación de sitios y aplicaciones web.'),
+('Dispositivos Móviles', 'Smartphones, tablets y accesorios relacionados.'),
+('IoT (Internet de las Cosas)', 'Dispositivos conectados y automatización del hogar y la industria.'),
+('Realidad Aumentada / Virtual', 'Soluciones para experiencias inmersivas en RA y RV.'),
+('Consultoría Tecnológica', 'Servicios de asesoría en implementación y transformación digital.');
 */
