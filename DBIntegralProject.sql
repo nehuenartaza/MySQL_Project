@@ -103,8 +103,145 @@ alter table Clientes modify apellido varchar(35) not null;
 alter table Clientes change comentarios observaciones varchar(255);
 alter table Clientes add column localidadID int, add constraint fk_localidadID foreign key (localidadID) references Localidades(localidadID);
 
+#Muestra todos los articulos + categorias
+select articuloID as id,
+nombre,
+precio,
+stock,
+null as codPostal,
+null as provincia,
+"articulo" as tipo
+from Articulos
+union
+select localidadID as id,
+nombre,
+null as precio,
+null as stock,
+codigoPostal as codPostal,
+provincia,
+"Ciudad" as tipo
+from Localidades;
 
+#Muestra todos los clientes + localidades
+select clienteID as id,
+nombre,
+apellido,
+cuit,
+direccion,
+observaciones,
+null as codPostal,
+null as provincia
+from Clientes
+union
+select localidadID as id,
+nombre,
+null as apellido,
+null as cuit,
+null as direccion,
+null as observaciones,
+codigoPostal as codPostal,
+provincia
+from Localidades;
 
+#Muestra todos los clientes + localidades, solo aquellos con apellido inicial G y localidades de Bs As
+select clienteID as id,
+nombre,
+apellido,
+cuit,
+direccion,
+observaciones,
+null as codPostal,
+null as provincia
+from Clientes
+where apellido like "G%"
+union
+select localidadID as id,
+nombre,
+null as apellido,
+null as cuit,
+null as direccion,
+null as observaciones,
+codigoPostal as codPostal,
+provincia
+from Localidades
+where provincia = "Buenos Aires";
+
+#Muestra los articulos con mas de 50 stock + Detalles
+select articuloID as id,
+nombre,
+precio,
+stock,
+categoriaID,
+null as articuloID,
+null as facturaID,
+null as cantidad
+from Articulos
+where stock > 50
+union
+select detalleID as id,
+null as nombre,
+null as precio,
+null as stock,
+null as categoriaID,
+articuloID,
+facturaID,
+cantidad
+from Detalles
+where articuloID in (select articuloID from Articulos where stock > 50);
+
+#Muestra todos los datos de los clientes + ciudad en las que viven
+select c.*,
+l.nombre as ciudad,
+l.codigoPostal,
+l.provincia
+from Clientes as c
+join Localidades as l on c.localidadID = l.localidadID;
+
+#Muestra todas las Facturas + Detalles de los articulos asociados a cada una de las Facturas (no hace falta mostrar los Articulos)
+select f.FacturaID,
+f.Letra,
+f.Numero,
+f.Fecha,
+f.Monto,
+d.ArticuloID,
+d.Cantidad
+from Facturas as f
+join Detalles as d on f.facturaID = d.facturaID;
+
+#Muestra todas las Facturas + Detalles de los articulos asociados a cada una de las Facturas + nombre de los articulos
+select f.FacturaID,
+f.Letra,
+f.Numero,
+f.Fecha,
+f.Monto,
+d.ArticuloID,
+a.nombre,
+d.Cantidad
+from Facturas as f
+join Detalles as d on f.facturaID = d.facturaID
+join Articulos as a on d.articuloID = a.articuloID;
+
+#Muestra todas las facturas de los clientes con apellido García
+select f.*
+from Facturas as f
+join Clientes c on f.clienteID = c.clienteID
+where c.apellido like "%García%";
+
+#Muestra todos los articulos comprados por los clientes con apellido López
+select a.*,
+c.apellido,
+c.clienteID
+from Articulos as a
+join Detalles as d on a.articuloID = d.articuloID
+join Facturas as f on d.facturaID = f.facturaID
+join Clientes as c on f.clienteID = c.clienteID
+where c.apellido like "%López%";
+
+/*
+update Facturas
+set clienteID = 9
+where facturaID = 20;
+*/
 /*
 INSERT INTO Clientes (nombre, apellido, cuit, direccion, comentarios) VALUES
 ('Carlos', 'Pérez', '20-12345678-1', 'Av. Corrientes 1234', 'Cliente frecuente'),
@@ -178,6 +315,10 @@ INSERT INTO Clientes (nombre, apellido, cuit, direccion, observaciones, localida
 ("Micaela", "Altieri", "23-22885566-5", "Santamarina 1255", "GBA", 4);
 */
 /*
+insert into Clientes (nombre, apellido, cuit, direccion, observaciones, localidadID) VALUES
+("Elias", "Geronimo", "52-35105893-2", "Calle Ficticia 5293", null, 1);
+*/
+/*
 insert into Localidades(localidadID, nombre, codigoPostal, provincia) values
 (1, "CABA", 1000, "Buenos Aires"),
 (2, "Rosario", 2000, "Santa Fe"),
@@ -191,6 +332,10 @@ insert into Articulos(nombre, precio, stock) values
 ("Apple AirPods Pro", 979.75, 152),
 ("Lavasecarropas Automatico Samsung", 1589.50, 12),
 ("Gloria Trevi / Gloria / CD+DVD", 2385.70, 2);
+*/
+/*
+insert into Articulos(nombre, precio, stock, categoriaID) values
+("iCorn 19", 1200000, 94, 7);
 */
 /*
 insert into Facturas(letra, numero, clienteID, fecha, monto) values
