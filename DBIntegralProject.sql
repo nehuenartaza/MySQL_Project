@@ -237,6 +237,94 @@ join Facturas as f on d.facturaID = f.facturaID
 join Clientes as c on f.clienteID = c.clienteID
 where c.apellido like "%López%";
 
+#Muestra todos los clientes, juntando el nombre y el apellido en una misma columna
+select clienteID,
+direccion,
+concat(nombre, '-', apellido) as nombreCompleto
+from Clientes;
+
+#Lo mismo que la query anterior pero usando concat_ws
+select clienteID,
+direccion,
+concat_ws('-', nombre, apellido) as nombreCompleto
+from Clientes;
+
+#Lo mismo que la query anterior pero mostrando en mayúsculas el valor cargado en nombre
+select clienteID,
+direccion,
+upper(nombre) as nombre
+from Clientes;
+
+#Muestra los nombres de los clientes, y la inicial del nombre en una nueva columna
+select nombre,
+left(nombre, 1) as inicial
+from Clientes;
+
+#Muestra todas las facturas además de una columna que calcula el precio extra por el iva, mostrando como mucho 2 decimales
+select *,
+round(monto * 0.21, 2) as extraIVA
+from Facturas;
+
+#Lo mismo que la query anterior pero sumando el iva al precio final
+select *,
+round(monto * 1.21, 2) as precioNeto
+from Facturas;
+
+#Lo mismo que la query anterior pero redondeando el precioNeto a favor del cliente
+select *,
+floor(round(monto * 1.21, 2)) as favorDelCliente
+from Facturas;
+
+#Muestra todas las facturas efectuadas en 2021
+select *
+from Facturas
+having year(fecha) = 2021;
+
+#Muestra todas las facturas efectuadas en marzo o septiembre del 2021
+select *
+from (select * from Facturas having year(fecha) = 2021) as Facturas2021
+having month(Facturas2021.fecha) = 3 or month(Facturas2021.fecha) = 9;
+
+#Muestra las facturas efectuadas el primer día de cualquier mes cualquier año
+select *
+from Facturas
+having day(fecha) = 1;
+
+#Muestra todas las facturas, además de una columna que muestra cuantos días pasaron de esa factura
+select *,
+datediff(curdate(), fecha) as dias
+from Facturas;
+
+#Lo mismo que la query anterior, además de una columna que muestra el nombre del día
+select *,
+datediff(curdate(), fecha) as dias,
+dayname(fecha) as nombreDia
+from Facturas;
+
+#Lo mismo que la query anterior, además de una columna que muestra el día del año
+select *,
+datediff(curdate(), fecha) as dias,
+dayname(fecha) as nombreDia,
+dayofyear(fecha) as diaDelAnio
+from Facturas;
+
+#Lo mismo que la query anterior, además de una columna que muestra el primer vencimiento de la factura (30 días luego de la emisión)
+select *,
+datediff(curdate(), fecha) as dias,
+dayname(fecha) as nombreDia,
+dayofyear(fecha) as diaDelAnio,
+adddate(fecha, interval 30 day) as vencimiento_1
+from Facturas;
+
+#Lo mismo que la query anterior, además de una columna que muestra el segundo vencimiento de la factura (2 meses luego)
+select *,
+datediff(curdate(), fecha) as dias,
+dayname(fecha) as nombreDia,
+dayofyear(fecha) as diaDelAnio,
+adddate(fecha, interval 30 day) as vencimiento_1,
+adddate(fecha, interval 2 month) as vencimiento_2
+from Facturas;
+
 /*
 update Facturas
 set clienteID = 9
